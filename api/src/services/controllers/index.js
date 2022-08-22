@@ -1,5 +1,4 @@
-const sequelize = require('sequelize')
-const { Operation, Type, Category, Resultant } = require('../../db')
+const { Operation, Type, Category } = require('../../db')
 
 const getOperations = async (req, res) => {
   const operations = await Operation.findAll({
@@ -10,17 +9,6 @@ const getOperations = async (req, res) => {
   })
 
   return res.status(200).json(operations)
-}
-
-const getResultant = async (req, res) => {
-  const result = await Resultant.findAll({
-    include: {
-      model: Operation,
-      attribute: ['TypeName']
-    }
-  })
-
-  return res.status(200).json(result)
 }
 
 const addOperation = async (req, res) => {
@@ -46,18 +34,15 @@ const addOperation = async (req, res) => {
     await newOperation.setCategory(categoryOperation)
   }
 
-  const result = await Resultant.findOne({ where: { money: 0 } })
-  await result.addOperation(newOperation)
-
-  if (typeOperation.name === 'ingress') {
-    await result.update({ money: [sequelize.fn('sum', this.money, amount)] })
-  }
-
   return res.status(201).json({ message: 'Operación añadida con éxito' })
+}
+
+const getBalance = async (req, res) => {
+// la idea es hacer el balance de todos los ingresos y egresos de dinero de la aplicacion
 }
 
 module.exports = {
   getOperations,
-  getResultant,
-  addOperation
+  addOperation,
+  getBalance
 }

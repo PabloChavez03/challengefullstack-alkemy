@@ -1,8 +1,8 @@
 const route = require('express').Router()
-const { getOperations, addOperation, getResultant } = require('../controllers')
+const { getOperations, addOperation, getBalance } = require('../controllers')
 
 route.get('/operations', getOperations)
-route.get('/getResultant', getResultant)
+route.get('/balance', getBalance)
 route.post('/addOperation', addOperation)
 
 module.exports = route
