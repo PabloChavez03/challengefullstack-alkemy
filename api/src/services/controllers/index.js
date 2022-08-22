@@ -39,7 +39,7 @@ const addOperation = async (req, res) => {
 }
 
 const getBalance = async (req, res) => {
-// la idea es hacer el balance de todos los ingresos y egresos de dinero de la aplicacion
+  // la idea es hacer el balance de todos los ingresos y egresos de dinero de la aplicacion
   const ingresos = await Operation.findAll({
     where: {
       TypeName: 'ingress'
@@ -76,8 +76,62 @@ const getBalance = async (req, res) => {
   }
 }
 
+const updateOperation = async (req, res) => {
+  const { id } = req.params
+  const { concept, amount, date, category } = req.body
+
+  if (id) {
+    try {
+      const operationForUpdate = await Operation.findOne({ where: { id } })
+
+      if (category) {
+        const [categoryForUpdate] = await Category.findOrCreate({
+          where: {
+            name: category
+          }
+        })
+        await operationForUpdate.update({ concept, amount, date })
+        await operationForUpdate.setCategory(categoryForUpdate)
+        await operationForUpdate.save()
+      }
+
+      await operationForUpdate.update({ concept, amount, date })
+      await operationForUpdate.save()
+      return res.status(200).json({ message: 'Los campos fueron actualizados correctamente' })
+    } catch (error) {
+      return res.status(409).json({ message: `Ocurrio el siguiente error: ${error.message}` })
+    }
+  }
+
+  return res.status(404).json({ message: 'No existe el id' })
+}
+
+const deleteOperation = async (req, res) => {
+  const { id } = req.params
+
+  if (id) {
+    try {
+      const deletedOperation = await Operation.destroy({
+        where: {
+          id
+        }
+      })
+
+      if (deletedOperation === 1) {
+        return res.status(200).json({ message: 'Se ha eliminado correctamente la operacion' })
+      }
+
+      return res.status(404).json({ message: 'Ya se ha eliminado esta operacion' })
+    } catch (error) {
+      return res.status(409).json({ message: `Ocurrio el siguiente error: ${error.message}` })
+    }
+  }
+}
+
 module.exports = {
-  getOperations,
   addOperation,
-  getBalance
+  deleteOperation,
+  getBalance,
+  getOperations,
+  updateOperation
 }
