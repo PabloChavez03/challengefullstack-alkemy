@@ -8,7 +8,7 @@ const {
   PORT
 } = process.env
 
-conn.sync({ force: true })
+conn.sync({ force: false })
   .then(() => {
     app.listen(PORT, async () => {
       await createTypes()

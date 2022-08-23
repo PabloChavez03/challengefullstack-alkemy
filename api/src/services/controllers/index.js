@@ -9,7 +9,18 @@ const getOperations = async (req, res) => {
     }
   })
 
-  return res.status(200).json(operations)
+  const newOperations = operations.map((op) => {
+    return {
+      id: op.id,
+      concept: op.concept,
+      amount: op.amount,
+      date: op.date,
+      type: op.TypeName,
+      category: op.CategoryName
+    }
+  })
+
+  return res.status(200).json(newOperations)
 }
 
 const addOperation = async (req, res) => {
