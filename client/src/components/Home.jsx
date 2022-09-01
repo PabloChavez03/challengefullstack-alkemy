@@ -30,9 +30,7 @@ export default function Home() {
           <h1>Añadir</h1>
         </div>
       </div>
-      <div>
         <Transactions />
-      </div>
     </div>
   );
 }
